@@ -1,0 +1,83 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.140'
+}
+
+version = mod_version
+group = mod_group
+
+base {
+    archivesName = mod_id
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(java_version as int)
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = 'https://api.modrinth.com/maven'
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
+    }
+}
+
+dependencies {
+    compileOnly "maven.modrinth:iris:${iris_version}"
+}
+
+neoForge {
+    version = neoforge_version
+
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+
+    runs {
+        configureEach {
+            systemProperty 'mixin.debug.export', 'true'
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    filteringCharset = 'UTF-8'
+
+    var replaceProperties = [
+            mod_id                     : mod_id,
+            mod_name                   : mod_name,
+            mod_version                : mod_version,
+            mod_author                 : mod_author,
+            minecraft_version_range    : minecraft_version_range,
+            neoforge_version           : neoforge_version,
+            neoforge_loader_version_range: neoforge_loader_version_range
+    ]
+
+    inputs.properties(replaceProperties)
+
+    filesMatching(['META-INF/neoforge.mods.toml', mod_id + '.mixins.json']) {
+        expand replaceProperties
+    }
+}

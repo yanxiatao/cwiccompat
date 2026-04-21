@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.chexson.cwiccompat.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "client.ClrwlProgramMixin",
+    "client.IrisGlShaderMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

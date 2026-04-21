@@ -1,0 +1,7 @@
+.gradle/
+build/
+vendor/
+
+*.log
+*.tmp
+*.bak
